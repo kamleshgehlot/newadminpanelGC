@@ -1,16 +1,16 @@
-import React from 'react';
-import {useState} from 'react';
-import {Redirect} from 'react-router-dom';
-// import axios from 'axios';
+import React, {useState} from 'react';
+import axios from 'axios';
 
-// API
-import { APP_TOKEN } from '../api/config/Constants';
-
-// import api
+// APIs
 import FetchAPI from '../api/APIs.js';
 
-function Login(props) {
 
+// Components
+import { APP_TOKEN, WEB_URL } from '../api/config/Constants';
+
+
+function Login(props) {
+    const isTokenSource = axios.CancelToken.source();    
     const history = props.history;
     const [inputs, setInputs] = useState({username:'', password: ''});
 
@@ -18,29 +18,28 @@ function Login(props) {
       setInputs({...inputs, [props.target.name]: props.target.value});
     }
  
-    const handleSubmit = async () => {
-      if(inputs.username !== '' && inputs.password !== ''){
+    const handleSubmit = async (e) => {
+      e.preventDefault();
         try{      
-          const result = await FetchAPI.login({
-            username: inputs.username,
-            password: inputs.password,            
+          const result = await FetchAPI.login({ 
+            cancelToken : isTokenSource.token,
+            username: inputs.username, 
+            password: inputs.password 
           });
-          APP_TOKEN.set({
-            userName: result[0].username,
-            name: result[0].name,
-            token: result[0].token,
-          });
-          history.push('/');
+          if(result.errorCode === 200){
+            APP_TOKEN.set(result);
+            history.push('/');
+          }else if(result.errorCode === 401){
+            alert(result.message);
+          }
       }catch(e){
-          console.log('Error...',e);
-        } 
-    } 
+        console.log('Error...',e);
+      } 
 }
 
 
 return (
- 
- <div>
+      <div>
         <div className="auth">
           <div className="auth-container">
             <div className="card">
@@ -57,42 +56,25 @@ return (
               </header>
               <div className="auth-content">
                 <p className="text-center">LOGIN TO CONTINUE</p>
-                <form id="login-form" action="/" method="GET" noValidate >
-                  
+                <form onSubmit= {handleSubmit}>
                   <div className="form-group">
                     <label htmlFor="username">Username</label>
-                    <input className="form-control underlined" name="username" id="username" placeholder="Your email address" value={inputs.username}  onChange={handleChange}  required type="email" />
+                    <input className="form-control underlined" name="username" id="username" placeholder="Your Username" value={inputs.username}  onChange={handleChange}  required type="text" />
                   </div>
                   <div className="form-group">
                     <label htmlFor="password">Password</label>
                     <input className="form-control underlined" name="password" id="password" placeholder="Your password" value={inputs.password}  onChange={handleChange}  required type="password" />
                   </div>
                   <div className="form-group">
-                    <label htmlFor="remember">
-                      <input className="checkbox" id="remember" type="checkbox" />
-                      <span>Remember me</span>
-                    </label>
-                   
+                    <button type="submit" className="btn btn-block btn-primary">Login</button>
                   </div>
-                  <div className="form-group">
-                    <button type="submit" className="btn btn-block btn-primary"  onClick={handleSubmit}>Login</button>
-                  </div>
-                
                 </form>
               </div>
             </div>
             <div className="text-center">
-              <a href="index.html" className="btn btn-secondary btn-sm">
+              <a href={WEB_URL} className="btn btn-secondary btn-sm">
                 <i className="fa fa-arrow-left" /> Go to Wesite </a>
             </div>
-          </div>
-        </div>
-        {/* Reference block for JS */}
-        <div className="ref" id="ref">
-          <div className="color-primary" />
-          <div className="chart">
-            <div className="color-primary" />
-            <div className="color-secondary" />
           </div>
         </div>
       </div>

@@ -1,5 +1,89 @@
 const AppModel = require('../models/AppModels.js');
 const {uploadDocument} = require('../utils/uploadDocument.js');
+const {isNullOrUndefined} = require('util');
+const jwt = require('jsonwebtoken');
+const { param } = require('../routes/mainRoute.js');
+
+
+
+const login = async function (req, res, next) {
+    const params = {
+       username: req.body.username,
+       password:req.body.password,
+    }
+    
+        let result = {};
+        let status = 200;
+
+    try {
+        const newActivity = new AppModel(params);
+        const users = await newActivity.login();
+        const user = users[0];
+        
+        if (users && users.length > 0 && !isNullOrUndefined(users)) {
+                const payload = { id: user.id, name: user.name, username: user.username, account_id : user.account_id };
+                const secret = process.env.JWT_SECRET || 'secret';
+                const options = { expiresIn: '12h', issuer: 'https://sargatechnology.com' };
+                const token = jwt.sign(payload, secret, options);
+
+                result.token = token;
+                result.id = user.id;
+                result.name = user.name;
+                result.username = user.username;
+                result.account_id = user.account_id;
+                result.errorCode = 200;
+            res.status(status).send(result);
+        } else {
+            result.errorCode = 401;
+            result.message = 'User id or password is incorrect.';
+            res.status(status).send(result);
+        }
+    } catch (err) {
+        next(err);
+    }
+}
+
+
+
+
+const getPrevBannerImage = async function (req, res, next) {
+    try {
+        const result = await new AppModel({type: req.body.type}).getPrevBannerImage();
+        res.send( {imageList: result} );
+    } catch (err) {
+        next(err);
+    }
+}
+  
+const updateBannerProduct = async function (req, res, next) {
+    const params = {
+        type : req.body.type,
+        imageId : req.body.imageId,
+        picType : req.body.picType,
+        document : req.body.document,
+    };
+    try {
+        const newActivity = new AppModel(params);
+        let result =[];
+        if(params.picType === 1 && params.document !== ""){
+            const base64Data = params.document.data.split(';base64,').pop();
+            let name = params.document.name.split('.')[0] + "_" + Date.now() + '.' + params.document.name.split('.')[1];
+        
+            await uploadDocument(`./files/images/${name}`, base64Data).catch(error => {
+                console.error(error);
+                throw (error);
+            });
+            newActivity.documentName = name;
+            result = await newActivity.uploadProductImage();
+        }else if(params.picType === 2 && params.imageId !== 0){
+            result = await newActivity.changeProductImage();
+        }
+        res.send(result);
+    } catch (err) {
+        next(err);
+    }
+}
+
 
 const addUpdateFormContent = async function (req, res, next) {
     const data = JSON.parse(req.body.data);
@@ -67,61 +151,6 @@ const addUpdateFormContent = async function (req, res, next) {
 
   
 
-
-const getPrevBannerImage = async function (req, res, next) {
-    try {
-        const result = await new AppModel({}).getPrevBannerImage();
-        res.send( result );
-    } catch (err) {
-        next(err);
-    }
-}
-  
-const updateBannerProduct = async function (req, res, next) {
-    console.log(req.body);
-    const params = {
-        imageId : req.body.imageId,
-        picType : req.body.picType,
-        documentName : '',
-    };
-    try {
-        const newActivity = new AppModel(params);
-        // const defineModal = new Categories(params);
-
-        if(params.picType === 1 && params.document !== ""){
-            const base64Data = req.body.document.data.split(';base64,').pop();
-            let name = req.body.document.name.split('.')[0] + "_" + Date.now() + '.' + req.body.document.name.split('.')[1];
-        
-            await uploadDocument(`./files/images/${name}`, base64Data).catch(error => {
-                console.error(error);
-                throw (error);
-            });
-            newActivity.documentName = name;
-            await newActivity.uploadProductImage();
-        }else if(params.picType === 2 && params.imageId !== 0){
-            await newActivity.changeProductImage();
-        }
-    
-        res.send();
-    } catch (err) {
-        next(err);
-    }
-}
-
-
-const login = async function (req, res, next) {
-    const params = {
-       username: req.body.username,
-       password:req.body.password,
-    }
-    try {
-        const newActivity = new AppModel(params);
-        const result = await newActivity.login();
-        res.send( result );
-    } catch (err) {
-        next(err);
-    }
-}
 
 
 const getContactList = async function (req, res, next) {
@@ -246,17 +275,11 @@ const changeState = async function (req, res, next) {
 module.exports = {    
     addUpdateFormContent: addUpdateFormContent,
     getTabRelatedList: getTabRelatedList,
-    getContactList:getContactList,
-    login: login,
-    changeState: changeState,
-    updateBannerProduct: updateBannerProduct,
-    getPrevBannerImage : getPrevBannerImage,
+    getContactList:getContactList,    
+    changeState: changeState,    
 
-    // getServicesList: getServicesList,
-    // getWhyusList: getWhyusList,
-    // getAboutList: getAboutList,    
-    // getGoalsList:getGoalsList,
-    // getTechnologyList:getTechnologyList,
-    // getPartnersList:getPartnersList,
-    // getPortfolioList:getPortfolioList,
+    login: login,
+    getPrevBannerImage : getPrevBannerImage,
+    updateBannerProduct: updateBannerProduct,
+    
 };

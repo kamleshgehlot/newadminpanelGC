@@ -3,15 +3,15 @@ import React from 'react';
 
 
 export default function Sidebar(){
-    return (    
-        <aside className="sidebar">
-        <div className="sidebar-container">
-        <div className="sidebar-header">
+  return (    
+    <aside className="sidebar">
+      <div className="sidebar-container">
+        <div className="sidebar-header" style = {{  borderBottom: '1px solid white'}}>
             <div className="brand">
-            <div className="logo">
-                <span >
-               {/* <img src='./images/Gc.ico'/> */}
-               </span>
+              <div className="logo">
+                {/* <span >
+                  <img src='./images/Gc.ico'/>
+               </span> */}
               
             </div> God Consciousness
             </div>

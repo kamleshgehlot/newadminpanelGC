@@ -6,28 +6,17 @@ export default function Header(props){
 
   function handleLogout(){
     APP_TOKEN.remove();
-    props.history.push('/login');
+    window.location.reload();
   }
 
-    return (
-      
-      <header className="header">
+  return (
+    <header className="header">
       <div className="header-block header-block-collapse d-lg-none d-xl-none">
         <button className="collapse-btn" id="sidebar-collapse-btn">
           <i className="fa fa-bars" />
         </button>
       </div>
-      <div className="header-block header-block-search">
-        {/* <form role="search">
-          <div className="input-container">
-            <i className="fa fa-search" />
-            <input placeholder="Search" type="search" />
-            <div className="underline" />
-          </div>
-        </form> */}
-      </div>
-
-      
+      <div className="header-block header-block-search"></div>
       <div className="header-block header-block-nav">
         <ul className="nav-profile">
           <li className="notifications new">
@@ -41,10 +30,8 @@ export default function Header(props){
             </a>
           </li>
         </ul>
-
       </div>
     </header>
-      
   );
 };
     

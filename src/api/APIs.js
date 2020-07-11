@@ -28,13 +28,12 @@ export default {
 
 
   login:async ({...payload }) => {
-
     const URL = `${c.API_CONSUMER}/api/login`;
     try {
       const { data } = await axios(URL, Object.assign({}, PARAMS({ methodType: 'POST' }), {
-        data: payload,
-      }),
-    );
+          data: payload,
+        }),
+      );
       return data;
     } catch (error) {
       checkError(error);
@@ -74,7 +73,7 @@ export default {
   getPrevBannerImage:async ({...payload }) => {
     const URL = `${c.API_CONSUMER}/api/getPrevBannerImage`;
     try {
-      const { data } = await axios(URL, Object.assign({}, PARAMS({ methodType: 'GET' }), {
+      const { data } = await axios(URL, Object.assign({}, PARAMS({ methodType: 'POST' }), {
         data: payload,
       }),
     );

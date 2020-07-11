@@ -17995,4 +17995,44 @@ a.text-dark:hover, a.text-dark:focus {
     border-color: #dee2e6;
   }
 }
+
+
+.remove {
+  display: block;
+  background: #444;
+  border: 1px solid black;
+  color: white;
+  text-align: center;
+  cursor: pointer;
+  margin-bottom: 15px;
+}
+.remove:hover {
+  background: white;
+  color: black;
+}
+
+
+input[type="file"] {
+  display: block;
+}
+.imageThumb {
+  max-height: fit-content;
+  width: 100%;
+  height: 182px;
+  cursor: pointer;
+  padding: 0px;
+  border: 1px solid #ced4da;
+  object-fit: contain;
+}
+
+.imageBox {
+  max-height: fit-content;
+  width: 100px;
+  height: 100px;
+  cursor: pointer;
+  padding: 0px;
+  border: 1px solid #ced4da;
+  object-fit: contain;
+}
+
 /*# sourceMappingURL=bootstrap.css.map */

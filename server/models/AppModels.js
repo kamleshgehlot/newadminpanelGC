@@ -26,6 +26,95 @@ const AppModel = function (params) {
 };
 
 
+
+AppModel.prototype.login = function () {
+  const that = this;
+  return new Promise(function (resolve, reject) {
+    connection.getConnection(function (error, connection) {
+      if (error) {
+        throw error;
+      }
+
+      connection.changeUser({database : dbName});
+      let Query = `SELECT id, name, token, username, account_id, is_active FROM user WHERE username = '${that.username}' AND password = AES_ENCRYPT('${that.password}', 'secret') AND is_active = 1;`;
+      // console.log(Query)
+      connection.query(Query, function (error, rows, fields) { 
+        if (error) {  console.log("Error...", error); reject(error);  }          
+        resolve(rows);              
+      });
+        connection.release();
+        console.log('Process Complete %d', connection.threadId);
+    });
+  });
+} 
+
+
+
+AppModel.prototype.getPrevBannerImage = function () {
+  const that = this;
+  return new Promise(function (resolve, reject) {
+    connection.getConnection(function (error, connection) {
+      if (error) { throw error; }
+      connection.changeUser({database : dbName});
+      connection.query(`SELECT * FROM images WHERE type = '${that.type}';`, function (error, rows, fields) {
+        if (error) {  console.log("Error...", error); reject(error);  }       
+            resolve(rows);
+        });
+        connection.release();
+        console.log('Process Complete %d', connection.threadId);
+    });
+  });
+} 
+
+
+
+AppModel.prototype.uploadProductImage = function () {
+  const that = this;
+  return new Promise(function (resolve, reject) {
+    connection.getConnection(function (error, connection) {
+      if (error) {
+        throw error;
+      }
+      connection.changeUser({database : dbName});
+      connection.query(`UPDATE images SET is_active = 0 WHERE type = '${that.type}';`, function (error, rows, fields) {
+        if (error) {  console.log("Error...", error); reject(error);  }
+        
+        const VALUES = [0, that.type, that.documentName, 1];
+        let Query = `INSERT INTO images(module_id, type, image_name, is_active) VALUES(?)`;
+        connection.query(Query, [VALUES], function (error, rows, fields) {
+          if (error) {  console.log("Error...", error); reject(error);  }
+          resolve(rows);
+        });
+      });
+        connection.release();
+        console.log('Process Complete %d', connection.threadId);
+    });
+  });
+} 
+
+
+
+AppModel.prototype.changeProductImage = function () {
+  const that = this;
+  return new Promise(function (resolve, reject) {
+    connection.getConnection(function (error, connection) {
+      if (error) { throw error;}
+      connection.changeUser({database : dbName});
+      connection.query(`UPDATE images SET is_active = 0 WHERE type = '${that.type}'; `, function (error, rows, fields) {
+        if (error) {  console.log("Error...", error); reject(error);  }
+       
+        connection.query(`UPDATE images SET is_active = 1 WHERE id = ${that.imageId} AND type = '${that.type}';`, function (error, rows, fields) {
+          if (error) {  console.log("Error...", error); reject(error);  }
+            resolve(rows);
+        });
+      });
+        connection.release();
+        console.log('Process Complete %d', connection.threadId);
+    });
+  });
+} 
+
+
 AppModel.prototype.uploadImage = function () {
   const that = this;
   return new Promise(function (resolve, reject) {
@@ -44,78 +133,6 @@ AppModel.prototype.uploadImage = function () {
   });
 });
 }
-
-
-AppModel.prototype.uploadProductImage = function () {
-  const that = this;
-  return new Promise(function (resolve, reject) {
-    connection.getConnection(function (error, connection) {
-      if (error) {
-        throw error;
-      }
-      connection.changeUser({database : dbName});
-      connection.query(`UPDATE images SET is_active = 0 WHERE type = 'bannerImage'`, function (error, rows, fields) {
-        if (error) {  console.log("Error...", error); reject(error);  }
-        
-        const VALUES = [0, that.type, that.documentName, 1];
-        let Query = `INSERT INTO images(module_id, type, image_name, is_active) VALUES(?)`;
-        connection.query(Query, [VALUES], function (error, rows, fields) {
-         
-          if (error) {  console.log("Error...", error); reject(error);  }
-          resolve(rows.insertId);
-        });
-
-      });
-
-      
-        connection.release();
-        console.log('Process Complete %d', connection.threadId);
-    });
-  });
-} 
-
-
-
-AppModel.prototype.getPrevBannerImage = function () {
-  const that = this;
-  return new Promise(function (resolve, reject) {
-    connection.getConnection(function (error, connection) {
-      if (error) {
-        throw error;
-      }
-      connection.changeUser({database : dbName});
-      connection.query(`SELECT * FROM images WHERE type = 'bannerImage'`, function (error, rows, fields) {
-        if (error) {  console.log("Error...", error); reject(error);  }       
-            resolve(rows);
-        });
-        connection.release();
-        console.log('Process Complete %d', connection.threadId);
-    });
-  });
-} 
-
-
-AppModel.prototype.changeProductImage = function () {
-  const that = this;
-  return new Promise(function (resolve, reject) {
-    connection.getConnection(function (error, connection) {
-      if (error) {
-        throw error;
-      }
-      connection.changeUser({database : dbName});
-      connection.query(`UPDATE images SET is_active = 0 WHERE type = +that.type+ `, function (error, rows, fields) {
-        if (error) {  console.log("Error...", error); reject(error);  }
-       
-        connection.query(`UPDATE images SET is_active = 1 WHERE id = ${this.imageId},type = ${this.type}`, function (error, rows, fields) {
-          if (error) {  console.log("Error...", error); reject(error);  }
-            resolve(rows.insertId);
-        });
-      });
-        connection.release();
-        console.log('Process Complete %d', connection.threadId);
-    });
-  });
-} 
 
 
 
@@ -241,25 +258,6 @@ AppModel.prototype.getContactList = function () {
 
 
 
-
-AppModel.prototype.login = function () {
-  const that = this;
-  return new Promise(function (resolve, reject) {
-    connection.getConnection(function (error, connection) {
-      if (error) {
-        throw error;
-      }
-
-      connection.changeUser({database : dbName});
-      connection.query('SELECT name, token, username, is_active FROM user WHERE username = "'+that.username+'" AND password = "'+that.password+'"', function (error, rows, fields) { 
-        if (error) {  console.log("Error...", error); reject(error);  }          
-        resolve(rows);              
-      });
-        connection.release();
-        console.log('Process Complete %d', connection.threadId);
-    });
-  });
-} 
 
 
 AppModel.prototype.changeState = function () {

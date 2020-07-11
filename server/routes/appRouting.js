@@ -3,8 +3,9 @@ const AppController = require('../controllers/AppController.js');
 const Routing = express.Router();
 const multer = require('multer');
 
+const validateToken = require('../utils/utils.js').validateToken;
 
-const storage = multer.diskStorage({    
+const storage = multer.diskStorage({
   destination: function (req, file, callback) {
     callback(null, './files/images');
   },
@@ -19,9 +20,13 @@ Routing.route("/addUpdateFormContent").post(upload.array('images'), AppControlle
 Routing.route("/getTabRelatedList").post(AppController.getTabRelatedList);
 Routing.route("/changeState").post(AppController.changeState);
 Routing.route("/getContactList").get(AppController.getContactList);
-Routing.route("/login").post(AppController.login);
-Routing.route("/updateBannerProduct").post(AppController.updateBannerProduct);
-Routing.route("/getPrevBannerImage").get(AppController.getPrevBannerImage);
 
+
+
+
+Routing.route("/login").post(AppController.login);
+
+Routing.route("/getPrevBannerImage").post(validateToken, AppController.getPrevBannerImage);
+Routing.route("/updateBannerProduct").post(validateToken, AppController.updateBannerProduct);
 
 module.exports = Routing;
