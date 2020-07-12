@@ -31,7 +31,6 @@ app.use('/api/images', function (req, res, next) {
     try {
       const fileName = (req.query.path).toString().split('/').pop();
       let file = '';
-  
       try {
         if(fileName === 'null'){
             file = `${__dirname}/files/fileNotAvailabe.jpg`;

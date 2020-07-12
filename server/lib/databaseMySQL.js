@@ -2,7 +2,6 @@ const env = 'local';
 let DbName = 'godconsciousness';
 let domainName = 'localhost:5001';
 
-
 console.log('env...', env);
 
 if (env === 'prod') {

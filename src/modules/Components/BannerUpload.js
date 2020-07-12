@@ -7,7 +7,7 @@ import Sidebar from './Sidebar.js';
 import FetchAPI from '../../api/APIs';
 import { API_URL } from '../../api/config/Constants.js';
 
-import FileReaders from  '../../utils/fileReader'
+import FileReaders from  '../../utils/fileReader.js';
 
 
 
@@ -18,7 +18,7 @@ export default function BannerUpload(props) {
     let titleText = '';
     switch(type){
         case 'Home'          :   titleText = 'Home'          ; pathLink = '/home';          break;
-        case 'Events'        :   titleText = 'Events'        ; pathLink = '/Events';        break;
+        case 'Event'         :   titleText = 'Event'         ; pathLink = '/Events';        break;
         case 'Directions'    :   titleText = 'Directions'    ; pathLink = '/Directions';    break;
         case 'DimpleAnil'    :   titleText = 'DimpleAnil'    ; pathLink = '/DimpleAnil';    break;
         case 'AboutGC'       :   titleText = 'AboutGC'       ; pathLink = '/AboutGC';       break;
@@ -108,7 +108,7 @@ const updateBannerProduct = async (e) => {
             document : doc,
             type : 'banner'+type,
         });
-        alert ("Image Updated Successfully");   
+        alert ("Image Updated Successfully");
         getPrevBannerImage();
     }catch(e){
         console.log('Error...', e);
@@ -144,7 +144,7 @@ const updateBannerProduct = async (e) => {
                                         {(preImages.length > 0 ? preImages : []).map(data => {
                                             return(
                                                 <span>
-                                                    <img class="imageBox" name={"prevImage-" + data.id} src={API_URL + "/api/images?path=images/" + data.image_name} onClick={handleSetPrevImage} />
+                                                    <img class="imageBox" name={"prevImage-" + data.id} src={API_URL + "/api/images?path=bannerImages/" + data.image_name} onClick={handleSetPrevImage} />
                                                 </span>
                                             )
                                         })}
@@ -159,7 +159,7 @@ const updateBannerProduct = async (e) => {
                                     </div>
                                 </div>
                                 <span>
-                                    <img className="imageThumb" id="bannerImageThumb" src={API_URL + "/api/images?path=images/" + currImage.image_name} />
+                                    <img className="imageThumb" id="bannerImageThumb" src={API_URL + "/api/images?path=bannerImages/" + currImage.image_name} />
                                     <br/>
                                     <span className="remove" onClick={handleFileRemove}>Remove image</span>
                                 </span>

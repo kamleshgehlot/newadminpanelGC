@@ -45,20 +45,6 @@ export default {
     const URL = `${c.API_CONSUMER}/api/addUpdateFormContent`;
     try {
       const { data } = await axios(URL, Object.assign({}, PARAMS({ methodType: 'POST' }), {
-        data: payload.formData,
-      }),
-    );
-      return data;
-    } catch (error) {
-      checkError(error);
-      throw error;
-    }
-  },
-
-  getTabRelatedList:async ({...payload }) => {
-    const URL = `${c.API_CONSUMER}/api/getTabRelatedList`;
-    try {
-      const { data } = await axios(URL, Object.assign({}, PARAMS({ methodType: 'POST' }), {
         data: payload,
       }),
     );
@@ -72,6 +58,21 @@ export default {
 
   getPrevBannerImage:async ({...payload }) => {
     const URL = `${c.API_CONSUMER}/api/getPrevBannerImage`;
+    try {
+      const { data } = await axios(URL, Object.assign({}, PARAMS({ methodType: 'POST' }), {
+        data: payload,
+      }),
+    );
+      return data;
+    } catch (error) {
+      checkError(error);
+      throw error;
+    }
+  },
+
+  
+  getTabRelatedList:async ({...payload }) => {
+    const URL = `${c.API_CONSUMER}/api/getTabRelatedList`;
     try {
       const { data } = await axios(URL, Object.assign({}, PARAMS({ methodType: 'POST' }), {
         data: payload,

@@ -1,24 +1,41 @@
-import React, {useState, useEffect } from 'react';
-import Header from './Components/Header.js';
-import Sidebar from './Components/Sidebar.js';
+import React, {useState, useEffect, Fragment } from 'react';
+import {isNullOrUndefined} from 'util';
 
 
 
 // import api
 import FetchAPI from '../api/APIs.js';
 
-export default function Editor(mainProps) {
-  const props = mainProps.location.state;
-  const type = props.type;
-  const operation = props.operation;
+//Components 
+import Header from './Components/Header.js';
+import Sidebar from './Components/Sidebar.js';
+import FileReaders from  '../utils/fileReader.js';
+import {getDate} from '../utils/datetime.js';
+import { API_CONSUMER, API_URL } from '../api/config/Constants.js';
+import { type } from 'os';
 
- console.log(props)
+const RESET_VALUES = {
+  title : '', 
+  content : '', 
+  link : '',
+  address : '', 
+  email : '', 
+  mobile : '',
+  date : '',
+  image_name : '',
+};
+
+export default function Editor(props) {
+  const type = props.location.state.type;
+  const operation = props.location.state.operation;
+  const updatableData = operation === 'Update' ? props.location.state.data : [];
 
   let pathLink = '';
   let titleText = '';
-  switch(type){
+  // console.log(props.location.state)
 
-    case 'Events'        :   titleText = 'Events'        ; pathLink = '/Events';  break;
+  switch(type){
+    case 'Event'         :   titleText = 'Event'         ; pathLink = '/Events';  break;
     case 'Directions'    :   titleText = 'Directions'    ; pathLink = '/Directions'; break;
     case 'DimpleAnil'    :   titleText = 'DimpleAnil'    ; pathLink = '/DimpleAnil'; break;
     case 'AboutGC'       :   titleText = 'AboutGC'       ; pathLink = '/AboutGC'; break;
@@ -32,246 +49,178 @@ export default function Editor(mainProps) {
   
 
 
-  const [inputs, setInputs] = useState({name:'', content: '', link: '', address:'', email:'', mobile: '',event_date:'',video:''});  
+  const [inputs, setInputs] = useState(RESET_VALUES);
 
   const handleChange  = (props) => {
     setInputs({...inputs, [props.target.name]: props.target.value});
   }
 
   useEffect(() => {
-    if(Object.keys(props)[2] === 'data'){
-      setInputs({name: props.data.title, content: props.data.content, link: props.data.link, address: props.data.address , email: props.data.email, mobile: props.data.mobile,event_date: props.event_date ,video:props.video })
+    if(operation === 'Update'){
+      setInputs({
+        title : updatableData.title, 
+        content : updatableData.content, 
+        link : updatableData.link, 
+        date: getDate(updatableData.date),
+        address : updatableData.address, 
+        email : updatableData.email, 
+        mobile : updatableData.mobile,
+        image_name : updatableData.image_name,
+      });
     }
   },[])
 
-  const selectImage = (e) => {    
-    if(document.getElementById('upload_image').files && document.getElementById('upload_image').files[0]){
-      let reader = new FileReader();
-      reader.onload = (e) => {
-        document.getElementById('imagePreview').style.backgroundImage = 'url(' + e.target.result + ')';
-      };
-      reader.readAsDataURL(document.getElementById('upload_image').files[0]);
-      document.getElementById('closeFrame').click();
-    }
-  }
 
-  const handleContactSubmit  = async  ()=> {
-    if(inputs.content !=='' && inputs.address !== '' && inputs.email !== ''){
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try{
+      let doc = document.getElementById('uploadImage').files[0];
       const data = {
-        id : props.data.id,
         operation: operation,
         type: type,
-        address: inputs.address,
-        mobile: inputs.mobile,
-        email: inputs.email,
+        title: inputs.title,
+        content : inputs.content,
+        date : getDate(inputs.date),
+        link : inputs.link,
+        image : isNullOrUndefined(doc) ? '' : await FileReaders.toBase64(doc),
       }
-      let formData = new FormData();
-      formData.append('data', JSON.stringify(data));
-      const response = await FetchAPI.addUpdateFormContent({ formData: formData });
-      if(response.is_successful === true){
-        mainProps.history.push(pathLink);
+      
+      if(operation === 'Update'){
+        data.id = updatableData.id;
+        data.image_id = updatableData.image_id;
+        data.link_id = updatableData.link_id;
       }
-    }else{
-      alert('Need all fields')
-    }
-  }
-
-  const handleSubmit = async () => {
-    if(inputs.name !=='' && inputs.content !== ''){
-      try{
-        const data = {
-              operation: operation,
-              type: type,
-              title: inputs.name,
-              content: inputs.content,
-              event_date:inputs.event_date,
-              link: inputs.link,
-              video:inputs.video,
-            }
-        if(operation === 'update'){
-          data.id = props.data.id;
-          data.image_id = props.data.image_id;
-          data.link_id = props.data.link_id;
-          data.event_date = props.data.event_date;
-          data.video = props.video;
-        }
-        let formData = new FormData();
-        formData.append('data', JSON.stringify(data));
-        formData.append('images', document.getElementById('upload_image').files[0]);
-        const response = await FetchAPI.addUpdateFormContent({ formData: formData });
-        if(response.is_successful === true){
-            mainProps.history.push(pathLink);
-        }else {
-          if(operation === 'add'){
-            alert('operation failed');
-          }            
-        }
+        const result = await FetchAPI.addUpdateFormContent(data);
+        props.history.push(pathLink);
       }catch(e){
         console.log('Error...',e);
       }
-    }else{
-      alert('Need all fields')
-    }
-
   }
 
-        return (
-         <div>
 
-               <Header {...mainProps}/>
-                <Sidebar/>  
-            
-                <div>
-                <div className="sidebar-overlay" id="sidebar-overlay" />
-                <div className="sidebar-mobile-menu-handle" id="sidebar-mobile-menu-handle" />
-                <div className="mobile-menu-handle" />
-                <article className="content item-editor-page">
-                  <div className="title-block">
-                    
-                    <h3 className="title"> 
-                    {titleText}
+  
+  const handleFileChange = (e) => {
+    if (window.File && window.FileList && window.FileReader) {
+        let file = e.target.files[0];
+        if(file !== null && file !== undefined && file !== ""){
+            let fileReader = new FileReader();
+            fileReader.onload = (e) => {
+                document.getElementById("imageThumb").setAttribute('src',e.target.result);
+                document.getElementById("imageThumb").setAttribute('title', "Selected image");
+            }
+            fileReader.readAsDataURL(file);
+        }
+    } else {
+        alert("Your browser doesn't support to File API")
+    }
+  }
 
-
-                    <a href= {pathLink} >
-                    <button type="button"  className="close" data-dismiss="modal" aria-label="Close">
-                          <span aria-hidden="true">×</span>
-                          <span className="sr-only">Close</span>
-                        
-                        </button>
-                    </a>
-                    
-                                        
-                    <span className="sparkline bar" data-type="bar" />
-                    </h3>
-                  </div>
-                  <form name="item">
-                    <div className="card card-block">
-                      {type === 'contact' ? 
-                      <div>
-                      <div className="form-group row">
-                        <label className="col-sm-2 form-control-label text-xs-right" > Address: </label>
-                        <div className="col-sm-10">
-                          <input className="form-control boxed" placeholder type="text" value = {inputs.address} name="address" onChange={handleChange } />                          
-                        </div>
-                      </div>
-                      <div className="form-group row">
-                        <label className="col-sm-2 form-control-label text-xs-right" > Mobile: </label>
-                        <div className="col-sm-10">
-                          <input className="form-control boxed" placeholder type="text" value = {inputs.mobile} name="mobile" onChange={handleChange } />                          
-                        </div>
-                      </div>
-                      <div className="form-group row">
-                        <label className="col-sm-2 form-control-label text-xs-right" > Email: </label>
-                        <div className="col-sm-10">
-                          <input className="form-control boxed" placeholder type="text" value = {inputs.email} name="email" onChange={handleChange } />                          
-                        </div>
-                      </div>
-                      <div className="form-group row">
-                        <div className="col-sm-10 col-sm-offset-2">
-                          <button type="button"  className="btn btn-primary" onClick={handleContactSubmit}>   Submit </button>
-                        </div>
-                      </div>
-                      </div>
-                      :
-                      <div>
-                      <div className="form-group row">
-                        <label className="col-sm-2 form-control-label text-xs-right" > Name: </label>
-                        <div className="col-sm-10">
-                          <input className="form-control boxed" placeholder type="text" value = {inputs.name} name="name" onChange={handleChange } />                          
-                        </div>
-                      </div>
-                      <div className="form-group row">
-                        <label className="col-sm-2 form-control-label text-xs-right"> Content: </label>
-                        <div className="col-sm-10">
-                          <textarea className="form-control boxed " rows="8" type="text" value = {inputs.content} name="content" onChange={handleChange } />
-                        </div>
-                      </div> 
-                        <div className="form-group row">
-
-                        {type === 'Events' || type === 'Prayers'  ? 
-                        <label  value = {inputs.event_date}  placeholder type="DD/MM/YYYY" className="col-sm-2 form-control-label text-xs-right"> Date: </label>
-                              :
-                          <label className="col-sm-2 form-control-label text-xs-right"> Link: </label>
-                                }
-                        
-                        <div className="col-sm-10">
-                        <input className="form-control boxed" placeholder type="text" value = {inputs.link} name="link" onChange={handleChange } />
-                        </div>
-                      </div> 
-                        
-                               
-                      <div className="form-group row">
-                      {type === 'AboutGC'  ? 
-                         
-                         <label value = {inputs.video}className="col-sm-2 form-control-label text-xs-right"> Video: </label>
-                         :
-                        <label className="col-sm-2 form-control-label text-xs-right"> Images: </label>
-                       
-                              }
-
-                       <div className="col-sm-10">
-                          <div className="images-container">
-                            <div className="image-container">                              
-                              <div id = "imagePreview" className="image" style={{backgroundImage: ``}} />  
-                              {/* <a href={API_URL + "/api/download?path=customer/" + inputs.id_proof }  download >{inputs.id_proof}</a> */}
-                              <img src=''/>
-                            </div>                           
-                            <a href="#" className="add-image" data-toggle="modal" data-target="#modal-media">
-                              <div className="image-container new">
-                                <div className="image">
-                                  <i className="fa fa-plus" />
-                                </div>
-                              </div>
-                            </a>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="form-group row">
-                        <div className="col-sm-10 col-sm-offset-2">
-                          <button type="button"  className="btn btn-primary" onClick={handleSubmit}> Submit </button>
-                        </div>
-                      </div>
-                    </div>}
-                    </div>
-                  </form>
-                </article>
-                <div className="modal fade" id="modal-media">
-                  <div className="modal-dialog modal-lg">
-                    <div className="modal-content">
-                      <div className="modal-header">
-                        <h4 className="modal-title">Choose Image</h4>
-                        <button type="button" id="closeFrame" className="close" data-dismiss="modal" aria-label="Close">
-                          <span aria-hidden="true">×</span>
-                          <span className="sr-only">Close</span>
-                        </button>
-                      </div>
-                      <div className="modal-body modal-tab-container">
-                        <ul className="nav nav-tabs modal-tabs" role="tablist">
-                          <li className="nav-item">
-                            <a className="nav-link active" href="#upload" data-toggle="tab" role="tab">Upload</a>
-                          </li>
-                        </ul>
-                        <div className="tab-content modal-tab-content">                       
-                            <div className="upload-container">
-                              <div id="dropzone">
-                              <form className="dropzone needsclick dz-clickable" id="demo-upload">
-                                  <div className="dz-message-block">
-                                    <div className="dz-message ">
-                                      <input accept="image/gif, image/jpeg, image/png, image/jpg"  style ={{display: 'none'}} id="upload_image" type="file" onChange ={(e) => {selectImage(e)}} />
-                                        <label htmlFor="upload_image">
-                                          Click to upload.
-                                        </label>
-                                    </div>
-                                  </div>
-                                </form>
-                              </div>
-                            </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>              
-              </div>
+  return (
+    <Fragment>
+      <Header />
+      <Sidebar/>
+        <div className="sidebar-overlay" id="sidebar-overlay" />
+        <div className="sidebar-mobile-menu-handle" id="sidebar-mobile-menu-handle" />
+        <div className="mobile-menu-handle" />
+        <article className="content item-editor-page">
+          <div className="title-block">
+            <h3 className="title"> {operation + ` ` + titleText}
+              <a href= {pathLink} >
+                <button type="button"  className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">×</span>
+                  <span className="sr-only">Close</span>
+                </button>
+              </a>
+              <span className="sparkline bar" data-type="bar" />
+            </h3>
+          </div>
+          <form onSubmit={handleSubmit}>
+            <div className="card card-block">
+              {type === 'Contact' && <ContactForm  inputs = {inputs} handleChange = {handleChange} /> }
+              {(type === 'Prayer' || type === 'Event') && <PrayerEventForm inputs = {inputs} handleChange = {handleChange} handleFileChange= {handleFileChange} type = {type} operation = {operation} /> }
+                  
             </div>
-            );
-        };
+          </form>
+        </article>
+      </Fragment>
+  )
+}
+
+
+const ContactForm = ({inputs, handleChange}) => {
+  return(
+    <Fragment>
+      <div className="form-group row">
+        <label className="col-sm-2 form-control-label text-xs-right" > Address: </label>
+        <div className="col-sm-10">
+          <input className="form-control boxed" placeholder type="text" value = {inputs.address} name="address" onChange={handleChange } />                          
+        </div>
+      </div>
+      <div className="form-group row">
+        <label className="col-sm-2 form-control-label text-xs-right" > Mobile: </label>
+        <div className="col-sm-10">
+          <input className="form-control boxed" placeholder type="text" value = {inputs.mobile} name="mobile" onChange={handleChange } />                          
+        </div>
+      </div>
+      <div className="form-group row">
+        <label className="col-sm-2 form-control-label text-xs-right" > Email: </label>
+        <div className="col-sm-10">
+          <input className="form-control boxed" placeholder type="text" value = {inputs.email} name="email" onChange={handleChange } />                          
+        </div>
+      </div>
+      <div className="form-group row">
+        <div className="col-sm-10 col-sm-offset-2">
+          <button type="submit"  className="btn btn-primary">   Submit </button>
+        </div>
+      </div>
+    </Fragment>
+  )
+}
+
+
+const PrayerEventForm = ({inputs, handleChange, handleFileChange, type, operation}) => {
+  return(
+    <Fragment>
+      <div className="form-group row">
+        <label className="col-sm-2 form-control-label text-xs-right" > Title* </label>
+          <div className="col-sm-10">
+            <input className="form-control boxed" type="text" value = {inputs.title} name="title" onChange={handleChange } required />                          
+          </div>
+      </div>
+      <div className="form-group row">
+        <label className="col-sm-2 form-control-label text-xs-right"> Content*  </label>
+          <div className="col-sm-10">
+            <textarea className="form-control boxed " rows="8" type="text" value = {inputs.content} name="content" onChange={handleChange } required />
+          </div>
+      </div> 
+      <div className="form-group row">
+        <label className="col-sm-2 form-control-label text-xs-right" > Date*  </label>
+          <div className="col-sm-10">
+            <input className="form-control boxed" type="date" value = {inputs.date} name="date" onChange={handleChange } required />                          
+          </div>
+      </div> 
+      <div className="form-group row">
+        <label className="col-sm-2 form-control-label text-xs-right"> Link </label>
+          <div className="col-sm-10">
+            <input className="form-control boxed" type="url" value = {inputs.link} name="link" onChange={handleChange } />
+          </div>
+      </div>
+      <div className="form-group row">
+        <label className="col-sm-2 form-control-label text-xs-right" > Upload Image* </label>
+          <div className="col-sm-10">
+            <div class="field" align="left">
+                <input type="file" className="form-control" id="uploadImage" name="uploadImage" accept=".png, .jpg, .jpeg" onChange={handleFileChange} required = {operation === 'Add'} />
+            </div>
+            <span>
+              <img className="imageThumb" id="imageThumb" src={ API_URL + `/api/images?path=${type}/` + inputs.image_name} />
+            </span>
+          </div>
+      </div>
+      <div className="form-group row">
+        <div className="col-sm-10 col-sm-offset-2">
+          <button type="submit"  className="btn btn-primary"> Submit </button>
+        </div>
+      </div>
+    </Fragment>
+  )
+}
