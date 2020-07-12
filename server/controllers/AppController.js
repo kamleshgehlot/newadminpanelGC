@@ -151,19 +151,6 @@ const getTabRelatedList = async function (req, res, next) {
 }
 
 
-
-const getContactList = async function (req, res, next) {
-    try {
-        const result = await new AppModel({}).getContactList();
-        res.send({ resultList: result });
-    } catch (err) {
-        next(err);
-    }
-}
-
-
-
-
 const changeState = async function (req, res, next) {
     let params = {
         type: req.body.type,
@@ -262,11 +249,6 @@ const changeState = async function (req, res, next) {
 
 
 module.exports = {    
-    
-    
-    getContactList:getContactList,    
-    
-
     login: login,
     getPrevBannerImage : getPrevBannerImage,
     updateBannerProduct: updateBannerProduct,

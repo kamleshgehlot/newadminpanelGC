@@ -85,21 +85,6 @@ export default {
     }
   },
 
-  
-  getContactList:async ({...payload }) => {
-    const URL = `${c.API_CONSUMER}/api/getContactList`;
-    try {
-      const { data } = await axios(URL, Object.assign({}, PARAMS({ methodType: 'GET' }), {
-        data: payload,
-      }),
-    );
-      return data;
-    } catch (error) {
-      checkError(error);
-      throw error;
-    }
-  },
-
   changeState:async ({...payload }) => {
     const URL = `${c.API_CONSUMER}/api/changeState`;
     try {

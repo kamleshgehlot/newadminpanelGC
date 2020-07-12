@@ -152,7 +152,6 @@ AppModel.prototype.updateFormContent = function () {
     }else{
         Query = `UPDATE website_content SET title = '${that.title}', content = '${that.content}', date = '${that.date}' WHERE id = '${that.id}'`;
     }
-    console.log(Query)
     connection.query(Query, function (error, rows, fields) { 
       if (error) {  console.log("Error...", error); reject(error);  }          
       resolve(rows);
