@@ -33,27 +33,20 @@ function App() {
                 
                 <Route exact path="/" render={() => <Redirect to="/login" /> } />
                 <Route exact path="/login" render={props => { return APP_TOKEN.notEmpty ? <Redirect to="/home" /> :  <Login {...props} /> }}  />
-                <Route exact path="/home" render={props => { return APP_TOKEN.notEmpty ? <Home {...props}/> :  <Redirect to="/login" /> }} />
+                <Route exact path="/home" render={props => { return APP_TOKEN.notEmpty ? <Home {...props}/> :  <Redirect to="/login" /> }} />                
                 <Route exact path="/bannerUpload"  render={props => { return APP_TOKEN.notEmpty ? <BannerUpload {...props}  />  :  <Redirect to="/login" />  }}  />
+                <Route exact path="/Events" render={props => { return APP_TOKEN.notEmpty ? <Events {...props}/>  :  <Redirect to="/login" />  }} />
                 <Route exact path="/Editor"  render={props => { return APP_TOKEN.notEmpty ? <Editor {...props}  />  :  <Redirect to="/login" />  }}  />
-                
+                <Route exact path="/Miracles" render={props => { return APP_TOKEN.notEmpty ? <Miracles {...props}/>  :  <Redirect to="/login" />  }} />
+                <Route exact path="/Directions" render={props => { return APP_TOKEN.notEmpty ? <Directions  {...props}/>  :  <Redirect to="/login" />  }} />                
+                <Route exact path="/OBEs" render={props => { return APP_TOKEN.notEmpty ? <OBEs {...props}/>  :  <Redirect to="/login" />  }} />
                 <Route exact path="/Prayers" render={props => { return APP_TOKEN.notEmpty ? <Prayers {...props}/>  :  <Redirect to="/login" />  }} />
+                <Route exact path="/Contact" render={props => { return APP_TOKEN.notEmpty ? <Contact {...props} />  :  <Redirect to="/login" />  }} />
 
-                <Route exact path="/Directions" render={props => { return APP_TOKEN.notEmpty ? <Directions  {...props}/>  :  <Redirect to="/login" />  }} />
                 <Route exact path="/Introduction" render={props => { return APP_TOKEN.notEmpty ? <Introduction {...props} />  :  <Redirect to="/login" />  }} />                
                 <Route exact path="/DimpleAnil" render={props => { return APP_TOKEN.notEmpty ? <DimpleAnil {...props} />  :  <Redirect to="/login" />  }} />                
                 <Route exact path="/Aboutgc" render={props => { return APP_TOKEN.notEmpty ? <Aboutgc {...props} />  :  <Redirect to="/login" />  }} />                
-                <Route exact path="/Events" render={props => { return APP_TOKEN.notEmpty ? <Events {...props}/>  :  <Redirect to="/login" />  }} />
-                <Route exact path="/OBEs" render={props => { return APP_TOKEN.notEmpty ? <OBEs {...props}/>  :  <Redirect to="/login" />  }} />
-                <Route exact path="/Miracles" render={props => { return APP_TOKEN.notEmpty ? <Miracles {...props}/>  :  <Redirect to="/login" />  }} />
-                 
-                
-                
-
-                <Route exact path="/Contact" render={props => { return APP_TOKEN.notEmpty ? <Contact {...props} />  :  <Redirect to="/login" />  }} />
                 <Route exact path="/About" render={props => { return APP_TOKEN.notEmpty ? <About  {...props}/>  :  <Redirect to="/login" />  }} />
-                
-             
               </Switch>
             </Suspense>
           </Router>

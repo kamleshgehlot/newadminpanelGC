@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import Header from './Components/Header.js';
-import Sidebar from './Components/Sidebar.js';
 import { Link } from 'react-router-dom';
 
 
@@ -8,6 +6,8 @@ import { Link } from 'react-router-dom';
 import FetchAPI from '../api/APIs.js';
 
 //Components
+import Header from './Components/Header.js';
+import Sidebar from './Components/Sidebar.js';
 import {getDateInDDMMYYYY} from '../utils/datetime.js'
 
 export default function Events(props){
@@ -61,7 +61,7 @@ export default function Events(props){
                     <table className="table table-striped table-bordered table-hover">
                       <thead>
                         <tr>
-                          <th style={{minWidth : '70px'}}>S No.</th>
+                          <th style={{minWidth : '70px'}}>S. No.</th>
                           <th style={{minWidth : '115px'}}>Date</th>
                           <th>Events </th>
                           <th style={{minWidth : '225px'}}>Actions</th>

@@ -145,9 +145,14 @@ AppModel.prototype.updateFormContent = function () {
   connection.getConnection(function (error, connection) {
     if (error) { throw error;}
 
-    connection.changeUser({database : dbName});
-    let Query = `UPDATE website_content SET title = '${that.title}', content = '${that.content}', date = '${that.date}' WHERE id = '${that.id}'`;
-    // connection.query('UPDATE contact SET email = "'+that.email+'", address = "' + that.address + '", mobile = "' +that.mobile+ '" WHERE id = "'+that.id+'"', function (error, rows, fields) { 
+    connection.changeUser({database : dbName});    
+    let Query = ``;
+    if(that.type === 'Contact'){
+        Query = `UPDATE contact SET email = '${that.email}', address = '${that.address}', mobile = '${that.mobile}' WHERE id = '${that.id}';`;
+    }else{
+        Query = `UPDATE website_content SET title = '${that.title}', content = '${that.content}', date = '${that.date}' WHERE id = '${that.id}'`;
+    }
+    console.log(Query)
     connection.query(Query, function (error, rows, fields) { 
       if (error) {  console.log("Error...", error); reject(error);  }          
       resolve(rows);
@@ -197,17 +202,26 @@ AppModel.prototype.insertLink = function () {
     connection.changeUser({database : dbName});
 
     if(that.operation === 'Update'){
-      connection.query(`UPDATE links SET is_active = 0 WHERE id = ${that.link_id};`, function (error, rows, fields) { 
+      connection.query(`UPDATE links SET is_active = 0 WHERE id = ${that.link_id} AND website_link != '${that.link}';`, function (error, rows, fields) { 
         if (error) {  console.log("Error...", error); reject(error);  } 
-        resolve(rows);              
+        if(rows.changedRows !== 0){
+          let Values = [[that.id ,that.type, that.link, 1]];    
+          connection.query('INSERT INTO links(module_id, type, website_link, is_active) VALUES ?',[Values], function (error, rows, fields) { 
+            if (error) {  console.log("Error...", error); reject(error);  } 
+            resolve(rows);
+          });
+        }else{
+          resolve(rows);
+        }
+      });
+    }else{
+      let Values = [[that.id ,that.type, that.link, 1]];    
+      connection.query('INSERT INTO links(module_id, type, website_link, is_active) VALUES ?',[Values], function (error, rows, fields) { 
+        if (error) {  console.log("Error...", error); reject(error);  } 
+        resolve(rows);
       });
     }
 
-    let Values = [[that.id ,that.type, that.link, 1]];    
-    connection.query('INSERT INTO links(module_id, type, website_link, is_active) VALUES ?',[Values], function (error, rows, fields) { 
-      if (error) {  console.log("Error...", error); reject(error);  } 
-      resolve(rows);
-    });
       connection.release();
       console.log('Process Complete %d', connection.threadId);
   });
@@ -223,6 +237,9 @@ AppModel.prototype.getTabRelatedList = function () {
       
       connection.changeUser({database : dbName});
       let Query = `SELECT wc.id, wc.type, wc.title, wc.content, wc.date, wc.is_active, wc.created_at, wc.updated_at, i.id as image_id, i.image_name, l.id as link_id, l.website_link as link FROM website_content as wc LEFT JOIN images as i ON wc.id = i.module_id AND i.is_active = 1 LEFT JOIN links as l ON wc.id = l.module_id AND l.is_active = 1 WHERE wc.type = '${that.type}';`;
+      if(that.type === 'Contact'){
+          Query = `Select * FROM contact WHERE id = 1;`;
+      }
       connection.query(Query, function (error, rows, fields) { 
         if (error) { console.log("Error...", error); reject(error);  }   
         resolve(rows);              
@@ -272,7 +289,7 @@ AppModel.prototype.changeState = function () {
       }else{
         connection.query('UPDATE website_content SET is_active  = "'+ that.is_active +'" WHERE id = "'+that.id+'"', function (error, rows, fields) { 
           if (error) {  console.log("Error...", error); reject(error);  }          
-          resolve(rows);              
+          resolve(rows);
         });
       }      
         connection.release();

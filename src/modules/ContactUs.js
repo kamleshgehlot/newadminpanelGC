@@ -1,115 +1,112 @@
-import React, { useEffect, useState } from 'react';
-import Header from './Components/Header.js';
-import Sidebar from './Components/Sidebar.js';
-
-
+import React, { useEffect, useState, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 
 
 // import api
 import FetchAPI from '../api/APIs.js';
 
-export default function Contact(props){
-  const [contactList, setContactList] = useState([]);  
+//Components
+import Header from './Components/Header.js';
+import Sidebar from './Components/Sidebar.js';
 
-
-  const fetchContact = async () => {
-    try{    
-      const result = await FetchAPI.getContactList({});      
-      setContactList(result.resultList);
+export default function OBEs(props){
+  const [contact, setContact] = useState({email: '', address: '', mobile: ''});
+  
+  const fetchOBEs = async () => {
+    try{ 
+      const result = await FetchAPI.getTabRelatedList({type: 'Contact'});
+      setContact(result.resultList[0]);
     }catch(e){
       console.log('Error...',e);
     }
   }
 
   useEffect(() => {
-   fetchContact();
-  },[]);
+   fetchOBEs();
+  },[]); 
 
-  // const handleUpdate = async (data) => {
-  //   console.log('handleUpdate',data)
-  // }
+      
+  const handleChange  = (e) => {
+    setContact({...contact, [e.target.name]: e.target.value});
+  }
 
-
-  const handleActiveDeactive = async (data) => {
-    console.log('handleActiveDeactive',data)
-    try{    
-      const result = await FetchAPI.changeState({type: 'contact', id: data.id, is_active: data.is_active});
-      setContactList(result.resultList);
-      // console.log('result',result)
+  const handleUpdateContact = async (e) => {
+    e.preventDefault();
+    try{
+      const data = {
+        operation: 'Update',
+        type : 'Contact',
+        id : contact.id,
+        address : contact.address,
+        mobile : contact.mobile,
+        email : contact.email,
+      }
+      console.log(data)
+        const result = await FetchAPI.addUpdateFormContent(data);
+        alert('Update Successfully');
+        fetchOBEs();
     }catch(e){
-      console.log('Error...',e);
+      console.log('Error...', e);
     }
   }
 
-        return (
-          <div>
-                 <Header {...props}/>
-                 <Sidebar />
-                
-                  <div className="sidebar-overlay" id="sidebar-overlay" />
-                  <div className="sidebar-mobile-menu-handle" id="sidebar-mobile-menu-handle" />
-                  <div className="mobile-menu-handle" />
-                  <article className="content responsive-tables-page">
-                    <div className="title-block">
-                      <h1 className="title"> Contact US  
-                        <Link to= {{pathname:"/editor", state : {type:'contact', operation: 'add'}}}><button type="button" style={{float: 'right' }}className="btn btn-success-outline">Add</button></Link>
-                        <Link to= {{pathname:"/images", state : {type:'contact', operation: 'add'}}}><button type="button" style={{float: 'right' ,marginRight:"20px"}}className="btn btn-success-outline">Banner Image</button></Link>
-                      </h1>
-                      <p className="title-description"></p>
-                    </div>
-                    <section className="section">
-                      <div className="row">
-                        <div className="col-md-12">
-                          <div className="card">
-                            <div className="card-block">
-                              <div className="card-title-block">
-                                <h3 className="title"></h3>
-                              </div>
-                              <section className="example">
-                                <div className="table-responsive">
-                                  <table className="table table-striped table-bordered table-hover">
-                                    <thead>
-                                      <tr>
-                                        <th>S No.</th>
-                                        <th>E-mail </th>
-                                        <th>Phone </th>
-                                        <th>Address </th>
-                                        <th>Update</th>
-                                        <th>Delete</th>
-                                      </tr>
-                                    </thead>
-                                    <tbody>
-                                      {(contactList.length > 0 ? contactList : []).map((data, index) => {
-                                          return(
-                                            <tr>
-                                              <td>{index+1}</td>
-                                              <td>{data.email}</td>
-                                              <td>{data.mobile}</td>
-                                              <td>{data.address}</td>
-                                              <td><Link to= {{pathname:"/editor", state : {type:'contact', operation: 'update', data: data}}}><button type="button" className="btn btn-success-outline">Update</button></Link></td>
-                                              <td><button type="button" className="btn btn-danger-outline"  onClick={()=>{handleActiveDeactive(data)}}>{data.is_active === 1 ? 'Deactive': 'Active'}</button></td> 
-                                            </tr>    
-                                          )                               
-                                        })
-                                      }
-                                    </tbody>
-                                  </table>
-                                </div>
-                              </section>
+
+  return (
+    <Fragment>
+      <Header />
+      <Sidebar />
+        <div className="sidebar-overlay" id="sidebar-overlay" />
+        <div className="sidebar-mobile-menu-handle" id="sidebar-mobile-menu-handle" />
+        <div className="mobile-menu-handle" />
+        <article className="content responsive-tables-page">
+          <div className="title-block">
+            <h1 className="title"> Contact
+              {/* <Link to= {{pathname:"/Editor", state : {type:'OBE', operation: 'Add'}}}><button type="button" style={{float: 'right' }}className="btn btn-success-outline">Add New</button></Link> */}
+              <Link to= {{pathname:"/bannerUpload", state : {type:'Contact'}}}><button type="button" style={{float: 'right',marginRight:"20px" }}className="btn btn-success-outline">Update Banner Image</button></Link>
+            </h1>
+            <p className="title-description"></p>
+          </div>
+            <section className="section">
+              <div className="row">
+                <div className="col-md-12">
+                  <div className="card-title-block">
+                    <h3 className="title"></h3>
+                  </div>
+                  <section className="example">
+                    <div className="table-responsive">
+                      <form onSubmit={handleUpdateContact}>
+                        <div className="card card-block">
+                          <div className="form-group row">
+                            <label className="col-sm-2 form-control-label text-xs-right" > Address* </label>
+                            <div className="col-sm-10">
+                              <input className="form-control boxed" type="text" value = {contact.address} name="address" onChange={handleChange } required />                          
+                            </div>
+                          </div>
+                          <div className="form-group row">
+                            <label className="col-sm-2 form-control-label text-xs-right" > Mobile* </label>
+                            <div className="col-sm-10">
+                              <input className="form-control boxed" type="text" value = {contact.mobile} name="mobile" onChange={handleChange } required />                          
+                            </div>
+                          </div>
+                          <div className="form-group row">
+                            <label className="col-sm-2 form-control-label text-xs-right" > Email* </label>
+                            <div className="col-sm-10">
+                              <input className="form-control boxed" type="email" value = {contact.email} name="email" onChange={handleChange } required />                          
+                            </div>
+                          </div>
+                          <div className="form-group row">
+                            <div className="col-sm-10 col-sm-offset-2">
+                              <button type="submit"  className="btn btn-primary">   Update </button>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    </section>
-                    <div className="ref" id="ref">
-                      <div className="color-primary" />
-                      <div className="chart">
-                        <div className="color-primary" />
-                        <div className="color-secondary" />
-                      </div>
+                      </form>
                     </div>
-                  </article>
+                  </section>
                 </div>
-          )    
+              </div>
+            </section>
+          </article>
+    </Fragment>
+  )
 }

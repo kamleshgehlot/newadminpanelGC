@@ -19,15 +19,16 @@ export default function BannerUpload(props) {
     switch(type){
         case 'Home'          :   titleText = 'Home'          ; pathLink = '/home';          break;
         case 'Event'         :   titleText = 'Event'         ; pathLink = '/Events';        break;
-        case 'Directions'    :   titleText = 'Directions'    ; pathLink = '/Directions';    break;
+        case 'Miracle'       :   titleText = 'Miracle'       ; pathLink = '/Miracles';      break;
+        case 'Direction'     :   titleText = 'Direction'     ; pathLink = '/Directions';    break;
+        case 'OBE'           :   titleText = 'OBE'           ; pathLink = '/OBEs';          break;
+        case 'Prayer'        :   titleText = 'Prayer'        ; pathLink = '/Prayers';       break;
+        case 'Contact'       :   titleText = 'Contact'       ; pathLink = '/Contact';       break;        
+
         case 'DimpleAnil'    :   titleText = 'DimpleAnil'    ; pathLink = '/DimpleAnil';    break;
         case 'AboutGC'       :   titleText = 'AboutGC'       ; pathLink = '/AboutGC';       break;
         case 'Introduction'  :   titleText = 'Introduction'  ; pathLink = '/Introduction';  break;
-        case 'OBEs'          :   titleText = 'OBEs'          ; pathLink = '/OBEs';          break;
         case 'about'         :   titleText = 'About us'      ; pathLink = '/About';         break;
-        case 'contact'       :   titleText = 'Contact'       ; pathLink = '/Contact';       break;
-        case 'Miracles'      :   titleText = 'Miracles'      ; pathLink = '/Miracles';      break;
-        case 'Prayers'       :   titleText = 'Prayers'       ; pathLink = '/Prayers';       break;
    }
     
   

@@ -117,7 +117,7 @@ const addUpdateFormContent = async function (req, res, next) {
             await newActivity.updateFormContent();
         }
 
-        if(params.image !== ""){
+        if(!isNullOrUndefined(params.image) && params.image !== ""){
             const base64Data = params.image.data.split(';base64,').pop();
             let name = params.image.name.split('.')[0] + "_" + Date.now() + '.' + params.image.name.split('.')[1];
         

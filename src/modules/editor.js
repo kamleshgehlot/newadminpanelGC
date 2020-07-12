@@ -36,15 +36,17 @@ export default function Editor(props) {
 
   switch(type){
     case 'Event'         :   titleText = 'Event'         ; pathLink = '/Events';  break;
-    case 'Directions'    :   titleText = 'Directions'    ; pathLink = '/Directions'; break;
+    case 'Direction'     :   titleText = 'Direction'     ; pathLink = '/Directions'; break;
+    case 'Miracle'       :   titleText = ' Miracle'      ; pathLink = '/Miracles'; break;
+    case 'Prayer'        :   titleText = ' Prayer'       ; pathLink = '/Prayers'; break;
+
     case 'DimpleAnil'    :   titleText = 'DimpleAnil'    ; pathLink = '/DimpleAnil'; break;
     case 'AboutGC'       :   titleText = 'AboutGC'       ; pathLink = '/AboutGC'; break;
     case 'Introduction'  :   titleText = 'Introduction'  ; pathLink = '/Introduction'; break;
-    case 'OBEs'          :   titleText = 'OBEs'          ; pathLink = '/OBEs'; break;
+    
     case 'about'         :   titleText = 'About us'      ; pathLink = '/About'; break;
     case 'contact'       :   titleText = 'Contact'       ; pathLink = '/Contact'; break;
-    case 'Miracles'      :   titleText = ' Miracles'     ; pathLink = '/Miracles'; break;
-    case 'Prayers'       :   titleText = ' Prayers'      ; pathLink = '/Prayers'; break;
+    
  }
   
 
@@ -136,47 +138,14 @@ export default function Editor(props) {
           </div>
           <form onSubmit={handleSubmit}>
             <div className="card card-block">
-              {type === 'Contact' && <ContactForm  inputs = {inputs} handleChange = {handleChange} /> }
               {(type === 'Prayer' || type === 'Event') && <PrayerEventForm inputs = {inputs} handleChange = {handleChange} handleFileChange= {handleFileChange} type = {type} operation = {operation} /> }
-                  
+              {(type !== 'Prayer' && type !== 'Event' && type !== 'Contact') && <OtherForm inputs = {inputs} handleChange = {handleChange} handleFileChange= {handleFileChange} type = {type} operation = {operation} /> }
             </div>
           </form>
         </article>
       </Fragment>
   )
 }
-
-
-const ContactForm = ({inputs, handleChange}) => {
-  return(
-    <Fragment>
-      <div className="form-group row">
-        <label className="col-sm-2 form-control-label text-xs-right" > Address: </label>
-        <div className="col-sm-10">
-          <input className="form-control boxed" placeholder type="text" value = {inputs.address} name="address" onChange={handleChange } />                          
-        </div>
-      </div>
-      <div className="form-group row">
-        <label className="col-sm-2 form-control-label text-xs-right" > Mobile: </label>
-        <div className="col-sm-10">
-          <input className="form-control boxed" placeholder type="text" value = {inputs.mobile} name="mobile" onChange={handleChange } />                          
-        </div>
-      </div>
-      <div className="form-group row">
-        <label className="col-sm-2 form-control-label text-xs-right" > Email: </label>
-        <div className="col-sm-10">
-          <input className="form-control boxed" placeholder type="text" value = {inputs.email} name="email" onChange={handleChange } />                          
-        </div>
-      </div>
-      <div className="form-group row">
-        <div className="col-sm-10 col-sm-offset-2">
-          <button type="submit"  className="btn btn-primary">   Submit </button>
-        </div>
-      </div>
-    </Fragment>
-  )
-}
-
 
 const PrayerEventForm = ({inputs, handleChange, handleFileChange, type, operation}) => {
   return(
@@ -200,11 +169,60 @@ const PrayerEventForm = ({inputs, handleChange, handleFileChange, type, operatio
           </div>
       </div> 
       <div className="form-group row">
+        <label className="col-sm-2 form-control-label text-xs-right"> Link* </label>
+          <div className="col-sm-10">
+            <input className="form-control boxed" type="url" value = {inputs.link} name="link" onChange={handleChange } required />
+          </div>
+      </div>
+      <div className="form-group row">
+        <label className="col-sm-2 form-control-label text-xs-right" > Upload Image* </label>
+          <div className="col-sm-10">
+            <div class="field" align="left">
+                <input type="file" className="form-control" id="uploadImage" name="uploadImage" accept=".png, .jpg, .jpeg" onChange={handleFileChange} required = {operation === 'Add'} />
+            </div>
+            <span>
+              <img className="imageThumb" id="imageThumb" src={ API_URL + `/api/images?path=${type}/` + inputs.image_name} />
+            </span>
+          </div>
+      </div>
+      <div className="form-group row">
+        <div className="col-sm-10 col-sm-offset-2">
+          <button type="submit"  className="btn btn-primary"> Submit </button>
+        </div>
+      </div>
+    </Fragment>
+  )
+}
+
+
+
+const OtherForm = ({inputs, handleChange, handleFileChange, type, operation}) => {
+  return(
+    <Fragment>
+      <div className="form-group row">
+        <label className="col-sm-2 form-control-label text-xs-right" > Title* </label>
+          <div className="col-sm-10">
+            <input className="form-control boxed" type="text" value = {inputs.title} name="title" onChange={handleChange } required />                          
+          </div>
+      </div>
+      <div className="form-group row">
+        <label className="col-sm-2 form-control-label text-xs-right"> Content*  </label>
+          <div className="col-sm-10">
+            <textarea className="form-control boxed " rows="8" type="text" value = {inputs.content} name="content" onChange={handleChange } required />
+          </div>
+      </div> 
+      {/* <div className="form-group row">
+        <label className="col-sm-2 form-control-label text-xs-right" > Date*  </label>
+          <div className="col-sm-10">
+            <input className="form-control boxed" type="date" value = {inputs.date} name="date" onChange={handleChange } required />                          
+          </div>
+      </div>  */}
+      {/* <div className="form-group row">
         <label className="col-sm-2 form-control-label text-xs-right"> Link </label>
           <div className="col-sm-10">
             <input className="form-control boxed" type="url" value = {inputs.link} name="link" onChange={handleChange } />
           </div>
-      </div>
+      </div> */}
       <div className="form-group row">
         <label className="col-sm-2 form-control-label text-xs-right" > Upload Image* </label>
           <div className="col-sm-10">
