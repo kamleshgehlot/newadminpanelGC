@@ -18,6 +18,9 @@ const Events = lazy(()=> import('./modules/Events'));
 const OBEs = lazy(()=> import('./modules/OBEs'));
 const Miracles = lazy(()=> import('./modules/Miracles'));
 const Prayers = lazy(()=> import('./modules/Prayers'));
+const WelcomeMessage = lazy(()=> import('./modules/WelcomeMessage.js'));
+const FooterMessage = lazy(()=> import('./modules/FooterMessage.js'));
+
 
 const Home = lazy(()=> import('./modules/Home'));
 const BannerUpload = lazy(()=> import('./modules/Components/BannerUpload.js'));
@@ -42,7 +45,9 @@ function App() {
                 <Route exact path="/OBEs" render={props => { return APP_TOKEN.notEmpty ? <OBEs {...props}/>  :  <Redirect to="/login" />  }} />
                 <Route exact path="/Prayers" render={props => { return APP_TOKEN.notEmpty ? <Prayers {...props}/>  :  <Redirect to="/login" />  }} />
                 <Route exact path="/Contact" render={props => { return APP_TOKEN.notEmpty ? <Contact {...props} />  :  <Redirect to="/login" />  }} />
-
+                <Route exact path="/WelcomeMessage" render={props => { return APP_TOKEN.notEmpty ? <WelcomeMessage {...props} />  :  <Redirect to="/login" />  }} />
+                <Route exact path="/FooterMessage" render={props => { return APP_TOKEN.notEmpty ? <FooterMessage {...props} />  :  <Redirect to="/login" />  }} />
+                
                 <Route exact path="/Introduction" render={props => { return APP_TOKEN.notEmpty ? <Introduction {...props} />  :  <Redirect to="/login" />  }} />                
                 <Route exact path="/DimpleAnil" render={props => { return APP_TOKEN.notEmpty ? <DimpleAnil {...props} />  :  <Redirect to="/login" />  }} />                
                 <Route exact path="/Aboutgc" render={props => { return APP_TOKEN.notEmpty ? <Aboutgc {...props} />  :  <Redirect to="/login" />  }} />                

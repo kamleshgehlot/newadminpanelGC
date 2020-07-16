@@ -150,7 +150,7 @@ AppModel.prototype.updateFormContent = function () {
     if(that.type === 'Contact'){
         Query = `UPDATE contact SET email = '${that.email}', address = '${that.address}', mobile = '${that.mobile}' WHERE id = '${that.id}';`;
     }else{
-        Query = `UPDATE website_content SET title = '${that.title}', content = '${that.content}', date = '${that.date}' WHERE id = '${that.id}'`;
+        Query = 'UPDATE website_content SET title = "' +that.title+'", content = "' + that.content +'", date = "' +that.date +'" WHERE id = "' + that.id +'";';
     }
     connection.query(Query, function (error, rows, fields) { 
       if (error) {  console.log("Error...", error); reject(error);  }          

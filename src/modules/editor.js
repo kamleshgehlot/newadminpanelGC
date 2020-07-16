@@ -82,7 +82,7 @@ export default function Editor(props) {
         type: type,
         title: inputs.title,
         content : inputs.content,
-        date : getDate(inputs.date),
+        date : getDate(inputs.date)  === "Invalid date" ? '' : getDate(inputs.date),
         link : inputs.link,
         image : isNullOrUndefined(doc) ? '' : await FileReaders.toBase64(doc),
       }
@@ -171,7 +171,7 @@ const PrayerEventForm = ({inputs, handleChange, handleFileChange, type, operatio
       <div className="form-group row">
         <label className="col-sm-2 form-control-label text-xs-right"> Link* </label>
           <div className="col-sm-10">
-            <input className="form-control boxed" type="url" value = {inputs.link} name="link" onChange={handleChange } required />
+            <input className="form-control boxed" type="url" value = {inputs.link} name="link" onChange={handleChange } />
           </div>
       </div>
       <div className="form-group row">

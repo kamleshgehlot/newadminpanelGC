@@ -24,11 +24,12 @@ export default function BannerUpload(props) {
         case 'OBE'           :   titleText = 'OBE'           ; pathLink = '/OBEs';          break;
         case 'Prayer'        :   titleText = 'Prayer'        ; pathLink = '/Prayers';       break;
         case 'Contact'       :   titleText = 'Contact'       ; pathLink = '/Contact';       break;        
+        case 'About'         :   titleText = 'About'         ; pathLink = '/home';         break;
 
         case 'DimpleAnil'    :   titleText = 'DimpleAnil'    ; pathLink = '/DimpleAnil';    break;
         case 'AboutGC'       :   titleText = 'AboutGC'       ; pathLink = '/AboutGC';       break;
         case 'Introduction'  :   titleText = 'Introduction'  ; pathLink = '/Introduction';  break;
-        case 'about'         :   titleText = 'About us'      ; pathLink = '/About';         break;
+        
    }
     
   

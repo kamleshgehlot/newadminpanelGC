@@ -68,7 +68,8 @@ const updateBannerProduct = async function (req, res, next) {
         if(params.picType === 1 && params.document !== ""){
             const base64Data = params.document.data.split(';base64,').pop();
             let name = params.document.name.split('.')[0] + "_" + Date.now() + '.' + params.document.name.split('.')[1];
-        
+            name = name.replace(/\s/g,'');
+            
             await uploadDocument(`./files/bannerImages/${name}`, base64Data).catch(error => {
                 console.error(error);
                 throw (error);
@@ -120,7 +121,8 @@ const addUpdateFormContent = async function (req, res, next) {
         if(!isNullOrUndefined(params.image) && params.image !== ""){
             const base64Data = params.image.data.split(';base64,').pop();
             let name = params.image.name.split('.')[0] + "_" + Date.now() + '.' + params.image.name.split('.')[1];
-        
+            name = name.replace(/\s/g,'');
+
             await uploadDocument(`./files/${params.type}/${name}`, base64Data).catch(error => {
                 console.error(error);
                 throw (error);
