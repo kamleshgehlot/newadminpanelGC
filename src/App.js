@@ -20,6 +20,7 @@ const Miracles = lazy(()=> import('./modules/Miracles'));
 const Prayers = lazy(()=> import('./modules/Prayers'));
 const WelcomeMessage = lazy(()=> import('./modules/WelcomeMessage.js'));
 const FooterMessage = lazy(()=> import('./modules/FooterMessage.js'));
+const Blog = lazy(()=> import('./modules/Blog.js'));
 
 
 const Home = lazy(()=> import('./modules/Home'));
@@ -47,6 +48,7 @@ function App() {
                 <Route exact path="/Contact" render={props => { return APP_TOKEN.notEmpty ? <Contact {...props} />  :  <Redirect to="/login" />  }} />
                 <Route exact path="/WelcomeMessage" render={props => { return APP_TOKEN.notEmpty ? <WelcomeMessage {...props} />  :  <Redirect to="/login" />  }} />
                 <Route exact path="/FooterMessage" render={props => { return APP_TOKEN.notEmpty ? <FooterMessage {...props} />  :  <Redirect to="/login" />  }} />
+                <Route exact path="/Blog" render={props => { return APP_TOKEN.notEmpty ? <Blog {...props} />  :  <Redirect to="/login" />  }} />
                 
                 <Route exact path="/Introduction" render={props => { return APP_TOKEN.notEmpty ? <Introduction {...props} />  :  <Redirect to="/login" />  }} />                
                 <Route exact path="/DimpleAnil" render={props => { return APP_TOKEN.notEmpty ? <DimpleAnil {...props} />  :  <Redirect to="/login" />  }} />                

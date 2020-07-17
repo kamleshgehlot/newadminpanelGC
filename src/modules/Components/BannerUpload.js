@@ -24,7 +24,8 @@ export default function BannerUpload(props) {
         case 'OBE'           :   titleText = 'OBE'           ; pathLink = '/OBEs';          break;
         case 'Prayer'        :   titleText = 'Prayer'        ; pathLink = '/Prayers';       break;
         case 'Contact'       :   titleText = 'Contact'       ; pathLink = '/Contact';       break;        
-        case 'About'         :   titleText = 'About'         ; pathLink = '/home';         break;
+        case 'About'         :   titleText = 'About'         ; pathLink = '/home';          break;
+        case 'Blog'          :   titleText = 'Blogs'         ; pathLink = '/Blog';          break;
 
         case 'DimpleAnil'    :   titleText = 'DimpleAnil'    ; pathLink = '/DimpleAnil';    break;
         case 'AboutGC'       :   titleText = 'AboutGC'       ; pathLink = '/AboutGC';       break;
