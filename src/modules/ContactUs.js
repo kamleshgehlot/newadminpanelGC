@@ -41,7 +41,6 @@ export default function OBEs(props){
         mobile : contact.mobile,
         email : contact.email,
       }
-      console.log(data)
         const result = await FetchAPI.addUpdateFormContent(data);
         alert('Update Successfully');
         fetchOBEs();
