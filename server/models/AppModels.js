@@ -20,7 +20,10 @@ const AppModel = function (params) {
   this.email= params.email;
   this.mobile = params.mobile;
   this.is_active = params.is_active;
-
+  this.time = params.time;
+  this.location = params.location;
+  this.contact = params.contact;
+  
   this.imageId = params.imageId;
   this.picType = params.picType;
   this.documentName = params.documentName;
@@ -126,8 +129,8 @@ AppModel.prototype.addFormContent = function () {
     
     connection.changeUser({database : dbName});
     
-    let Query = `INSERT INTO website_content(type, title, content, date, is_active) VALUES ?`;
-    let Values = [[that.type, that.title, that.content, that.date, 1]];
+    let Query = `INSERT INTO website_content(type, title, content, date, time, location, contact, is_active) VALUES ?`;
+    let Values = [[that.type, that.title, that.content, that.date, that.time, that.location, that.contact, 1]];
     connection.query(Query,[Values], function (error, rows, fields) { 
       if (error) {  console.log("Error...", error); reject(error);  } 
       resolve(rows.insertId);
@@ -150,7 +153,7 @@ AppModel.prototype.updateFormContent = function () {
     if(that.type === 'Contact'){
         Query = `UPDATE contact SET email = '${that.email}', address = '${that.address}', mobile = '${that.mobile}' WHERE id = '${that.id}';`;
     }else{
-        Query = 'UPDATE website_content SET title = "' +that.title+'", content = "' + that.content +'", date = "' +that.date +'" WHERE id = "' + that.id +'";';
+        Query = 'UPDATE website_content SET title = "' +that.title+'", content = "' + that.content +'", date = "' +that.date +'", time = "' + that.time +'", location = "'+ that.location + '", contact = "'+ that.contact +'" WHERE id = "' + that.id +'";';
     }
     connection.query(Query, function (error, rows, fields) { 
       if (error) {  console.log("Error...", error); reject(error);  }          
@@ -235,7 +238,7 @@ AppModel.prototype.getTabRelatedList = function () {
       if (error) { throw error; }
       
       connection.changeUser({database : dbName});
-      let Query = `SELECT wc.id, wc.type, wc.title, wc.content, wc.date, wc.is_active, wc.created_at, wc.updated_at, i.id as image_id, i.image_name, l.id as link_id, l.website_link as link FROM website_content as wc LEFT JOIN images as i ON wc.id = i.module_id AND i.is_active = 1 LEFT JOIN links as l ON wc.id = l.module_id AND l.is_active = 1 WHERE wc.type = '${that.type}';`;
+      let Query = `SELECT wc.id, wc.type, wc.title, wc.content, wc.date, wc.time, wc.location, wc.contact, wc.is_active, wc.created_at, wc.updated_at, i.id as image_id, i.image_name, l.id as link_id, l.website_link as link FROM website_content as wc LEFT JOIN images as i ON wc.id = i.module_id AND i.is_active = 1 LEFT JOIN links as l ON wc.id = l.module_id AND l.is_active = 1 WHERE wc.type = '${that.type}' ORDER BY wc.id DESC;`;
       if(that.type === 'Contact'){
           Query = `Select * FROM contact WHERE id = 1;`;
       }

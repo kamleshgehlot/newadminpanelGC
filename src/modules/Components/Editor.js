@@ -4,15 +4,14 @@ import {isNullOrUndefined} from 'util';
 
 
 // import api
-import FetchAPI from '../api/APIs.js';
+import FetchAPI from '../../api/APIs.js';
 
 //Components 
-import Header from './Components/Header.js';
-import Sidebar from './Components/Sidebar.js';
-import FileReaders from  '../utils/fileReader.js';
-import {getDate} from '../utils/datetime.js';
-import { API_CONSUMER, API_URL } from '../api/config/Constants.js';
-import { type } from 'os';
+import Header from './Header.js';
+import Sidebar from './Sidebar.js';
+import FileReaders from  '../../utils/fileReader.js';
+import {getDate} from '../../utils/datetime.js';
+import { API_CONSUMER, API_URL } from '../../api/config/Constants.js';
 
 const RESET_VALUES = {
   title : '', 
@@ -23,6 +22,9 @@ const RESET_VALUES = {
   mobile : '',
   date : '',
   image_name : '',
+  time : '',
+  location: '',
+  contact : '',
 };
 
 export default function Editor(props) {
@@ -32,7 +34,6 @@ export default function Editor(props) {
 
   let pathLink = '';
   let titleText = '';
-  // console.log(props.location.state)
 
   switch(type){
     case 'Event'         :   titleText = 'Event'         ; pathLink = '/Events';  break;
@@ -46,7 +47,6 @@ export default function Editor(props) {
     
     case 'about'         :   titleText = 'About us'      ; pathLink = '/About'; break;
     case 'contact'       :   titleText = 'Contact'       ; pathLink = '/Contact'; break;
-    
  }
   
 
@@ -68,14 +68,17 @@ export default function Editor(props) {
         email : updatableData.email, 
         mobile : updatableData.mobile,
         image_name : updatableData.image_name,
+        time : updatableData.time,
+        location: updatableData.location,
+        contact : updatableData.contact,
       });
     }
   },[])
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try{
+      
       let doc = document.getElementById('uploadImage').files[0];
       const data = {
         operation: operation,
@@ -85,6 +88,9 @@ export default function Editor(props) {
         date : getDate(inputs.date)  === "Invalid date" ? '' : getDate(inputs.date),
         link : inputs.link,
         image : isNullOrUndefined(doc) ? '' : await FileReaders.toBase64(doc),
+        time : inputs.time,
+        location: inputs.location,
+        contact : inputs.contact,
       }
       
       if(operation === 'Update'){
@@ -168,8 +174,30 @@ const PrayerEventForm = ({inputs, handleChange, handleFileChange, type, operatio
             <input className="form-control boxed" type="date" value = {inputs.date} name="date" onChange={handleChange } required />                          
           </div>
       </div> 
+      {type === 'Event' &&
+        <Fragment> 
+          <div className="form-group row">
+            <label className="col-sm-2 form-control-label text-xs-right" > Time*  </label>
+              <div className="col-sm-10">
+                <input className="form-control boxed" type="time" value = {inputs.time} name="time" onChange={handleChange } required />                          
+              </div>
+          </div>
+          <div className="form-group row">
+            <label className="col-sm-2 form-control-label text-xs-right" > Event location* </label>
+              <div className="col-sm-10">
+                <input className="form-control boxed" type="text" value = {inputs.location} name="location" onChange={handleChange } required />                          
+              </div>
+          </div>
+          <div className="form-group row">
+            <label className="col-sm-2 form-control-label text-xs-right" > Contact with* </label>
+              <div className="col-sm-10">
+                <input className="form-control boxed" type="text" value = {inputs.contact} name="contact" onChange={handleChange } required />                          
+              </div>
+          </div>
+        </Fragment>
+      }
       <div className="form-group row">
-        <label className="col-sm-2 form-control-label text-xs-right"> Link* </label>
+        <label className="col-sm-2 form-control-label text-xs-right"> Link  </label>
           <div className="col-sm-10">
             <input className="form-control boxed" type="url" value = {inputs.link} name="link" onChange={handleChange } />
           </div>

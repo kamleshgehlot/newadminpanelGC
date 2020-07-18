@@ -2,7 +2,6 @@ const AppModel = require('../models/AppModels.js');
 const {uploadDocument} = require('../utils/uploadDocument.js');
 const {isNullOrUndefined} = require('util');
 const jwt = require('jsonwebtoken');
-const { param } = require('../routes/mainRoute.js');
 
 
 
@@ -100,6 +99,9 @@ const addUpdateFormContent = async function (req, res, next) {
         link : req.body.link,
         image : req.body.image,
         date : req.body.date,
+        time : req.body.time,
+        location: req.body.location,
+        contact : req.body.contact,
 
         address : req.body.address,
         email : req.body.email,   
@@ -176,77 +178,6 @@ const changeState = async function (req, res, next) {
         next(err);
     }
 }
-
-
-
-
-// const getServicesList = async function (req, res, next) {
-//     try {
-//         const result = await new AppModel({}).getServicesList();
-//         res.send({ serviceList: result });
-//     } catch (err) {
-//         next(err);
-//     }
-// }
-
-
-
-// const getWhyusList = async function (req, res, next) {
-//     try {
-//         const result = await new AppModel({}).getWhyusList();
-//         res.send({ whyUsList: result });
-//     } catch (err) {
-//         next(err);
-//     }
-// }
-
-
-// const getGoalsList = async function (req, res, next) {
-//     try {
-//         const result = await new AppModel({}).getGoalsList();
-//         res.send({ goalsList: result });
-//     } catch (err) {
-//         next(err);
-//     }
-// }
-
-// const getTechnologyList = async function (req, res, next) {
-//     try {
-//         const result = await new AppModel({}).getTechnologyList();
-//         res.send({ technologyList: result });
-//     } catch (err) {
-//         next(err);
-//     }
-// }
-
-// const getPartnersList = async function (req, res, next) {
-//     try {
-//         const result = await new AppModel({}).getPartnersList();
-//         res.send({ partnersList: result });
-//     } catch (err) {
-//         next(err);
-//     }
-// }
-
-
-// const getPortfolioList = async function (req, res, next) {
-//     try {
-//         const result = await new AppModel({}).getPortfolioList();
-//         res.send({ portfolioList: result });
-//     } catch (err) {
-//         next(err);
-//     }
-// }
-
-// const getAboutList = async function (req, res, next) {
-//     try {
-//         const result = await new AppModel({}).getAboutList();
-//         res.send({ aboutList: result });
-//     } catch (err) {
-//         next(err);
-//     }
-// }
-
 
 
 

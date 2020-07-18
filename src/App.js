@@ -2,18 +2,13 @@ import React, {Suspense, lazy} from 'react';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import './App.css';
 
-import {APP_TOKEN} from  './api/config/Constants.js'
+import {APP_TOKEN} from  './api/config/Constants.js';
 import PageLoader  from './common/PageLoader';
 
-// const PageLoader = lazy(()=> import('./common/PageLoader'));
 const Directions = lazy(()=> import('./modules/Directions'));
-const About = lazy(()=> import('./modules/AboutCompany'));
 const Contact = lazy(()=> import('./modules/ContactUs'));
 const Login = lazy(()=> import('./modules/login'));
 
-const Introduction = lazy(()=> import('./modules/Introduction'));
-const Aboutgc = lazy(()=> import('./modules/Aboutgc'));
-const DimpleAnil = lazy(()=> import('./modules/DimpleAnil'));
 const Events = lazy(()=> import('./modules/Events'));
 const OBEs = lazy(()=> import('./modules/OBEs'));
 const Miracles = lazy(()=> import('./modules/Miracles'));
@@ -21,11 +16,9 @@ const Prayers = lazy(()=> import('./modules/Prayers'));
 const WelcomeMessage = lazy(()=> import('./modules/WelcomeMessage.js'));
 const FooterMessage = lazy(()=> import('./modules/FooterMessage.js'));
 const Blog = lazy(()=> import('./modules/Blog.js'));
-
-
-const Home = lazy(()=> import('./modules/Home'));
+const Home = lazy(()=> import('./modules/Home.js'));
 const BannerUpload = lazy(()=> import('./modules/Components/BannerUpload.js'));
-const Editor = lazy(()=> import('./modules/Editor.js'));
+const Editor = lazy(()=> import('./modules/Components/Editor.js'));
 
 function App() {
   return (
@@ -49,11 +42,6 @@ function App() {
                 <Route exact path="/WelcomeMessage" render={props => { return APP_TOKEN.notEmpty ? <WelcomeMessage {...props} />  :  <Redirect to="/login" />  }} />
                 <Route exact path="/FooterMessage" render={props => { return APP_TOKEN.notEmpty ? <FooterMessage {...props} />  :  <Redirect to="/login" />  }} />
                 <Route exact path="/Blog" render={props => { return APP_TOKEN.notEmpty ? <Blog {...props} />  :  <Redirect to="/login" />  }} />
-                
-                <Route exact path="/Introduction" render={props => { return APP_TOKEN.notEmpty ? <Introduction {...props} />  :  <Redirect to="/login" />  }} />                
-                <Route exact path="/DimpleAnil" render={props => { return APP_TOKEN.notEmpty ? <DimpleAnil {...props} />  :  <Redirect to="/login" />  }} />                
-                <Route exact path="/Aboutgc" render={props => { return APP_TOKEN.notEmpty ? <Aboutgc {...props} />  :  <Redirect to="/login" />  }} />                
-                <Route exact path="/About" render={props => { return APP_TOKEN.notEmpty ? <About  {...props}/>  :  <Redirect to="/login" />  }} />
               </Switch>
             </Suspense>
           </Router>

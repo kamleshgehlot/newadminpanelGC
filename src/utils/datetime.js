@@ -5,6 +5,11 @@ export function getDate(date) {
   return moment(date).format("YYYY-MM-DD");
 }
 
+// export function getTime(date) {
+//   console.log(date, moment(`${date}`).format("HH:mm"))
+//   return moment(date).format("HH:mm A")
+// }
+
 function getCurrentDateDBFormat() {
   return moment().format("YYYY-MM-DD")
 }
@@ -31,11 +36,9 @@ function getTimeinDBFormat(date) {
   return moment(date).format("HH:mm:ss")
 }
 
-function getTime(date) {
-  return moment(date).format("HH:mm")
-}
 
-function convertDateInUTC(date) {  
+
+function convertDateInUTC(date) {
   return moment.utc(date);  
 }
 

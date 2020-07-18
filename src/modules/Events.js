@@ -8,7 +8,7 @@ import FetchAPI from '../api/APIs.js';
 //Components
 import Header from './Components/Header.js';
 import Sidebar from './Components/Sidebar.js';
-import {getDateInDDMMYYYY} from '../utils/datetime.js'
+import {getDateInDDMMYYYY } from '../utils/datetime.js'
 
 export default function Events(props){
   const [EventsList, setEventsList] = useState([]);
@@ -62,8 +62,10 @@ export default function Events(props){
                       <thead>
                         <tr>
                           <th style={{minWidth : '70px'}}>S. No.</th>
+                          <th style={{minWidth : '250px'}}>Events </th>
                           <th style={{minWidth : '115px'}}>Date</th>
-                          <th>Events </th>
+                          <th style={{minWidth : '100px'}}>Time</th>
+                          <th style={{minWidth : '200px'}}>Location</th>
                           <th style={{minWidth : '225px'}}>Actions</th>
                         </tr>
                       </thead>
@@ -72,8 +74,10 @@ export default function Events(props){
                           return(
                             <tr>
                               <td>{index+1}</td>
-                              <td>{getDateInDDMMYYYY(data.date)}</td>
                               <td>{data.title} </td>
+                              <td>{getDateInDDMMYYYY(data.date)}</td>
+                              <td>{data.time}</td>
+                              <td>{data.location} </td>
                               <td>
                                 <Link to= {{pathname:"/Editor", state : {type:'Event', operation: 'Update', data: data}}} style={{textDecoration: 'none'}}> View & Update </Link>
                                   &nbsp;&nbsp;&nbsp;

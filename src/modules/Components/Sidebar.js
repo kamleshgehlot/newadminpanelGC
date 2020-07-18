@@ -8,11 +8,11 @@ export default function Sidebar(){
       <div className="sidebar-container">
         <div className="sidebar-header" style = {{  borderBottom: '1px solid white'}}>
             <div className="brand">
-              <div className="logo">
-                {/* <span >
-                  <img src='./images/Gc.ico'/>
-               </span> */}
-            </div> God Consciousness
+                {/* <a href="/"> */}
+                    <div className="logo" >
+                        <img className="logo-img" src='images/logo.png' />
+                    </div> God Consciousness
+                {/* </a> */}
             </div>
         </div>
         <nav className="menu">

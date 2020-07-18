@@ -12,8 +12,8 @@ app.use(bodyParser.json({ limit: '50mb', extend: true }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true}));
 
 
-const { env } = require("./lib/databaseMySQL");
-const mainRoute = require('./routes/mainRoute');
+const { env } = require("./lib/databaseMySQL.js");
+const mainRoute = require('./routes/mainRoute.js');
 
 
 if (env === 'prod') {
@@ -23,8 +23,6 @@ if (env === 'prod') {
     app.use('/', express.static(path.join(__dirname, '..', 'src')));
     app.use('/src', express.static(path.join(__dirname, '..', 'src')));
 }
-
-
 
 
 app.use('/api/images', function (req, res, next) {
